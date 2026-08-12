@@ -1,0 +1,35 @@
+{
+  "clients_total": 104,
+  "clients_eligible_history": 40,
+  "feature_window": [
+    "2026-03-01",
+    "2026-03-31"
+  ],
+  "label_window": [
+    "2026-04-01",
+    "2026-04-30"
+  ],
+  "n_features": 5,
+  "n_excluded": 17,
+  "q1_duplicate_grain_rows": 0,
+  "q2_rows_in_month": 9841378,
+  "q2_pages_in_slice": 85453,
+  "q2_clients_in_slice": 27,
+  "q3_gsc_is_true_share": 0.3669,
+  "q3_ga4_null_share": 0.3067,
+  "frame_rows": 85453,
+  "frame_clients": 27,
+  "label_base_rate": 0.5378,
+  "momentum_missing_share": 0.0281,
+  "baseline_random_top50": 0.4936,
+  "honest_score": {
+    "precision_at_k": 0.94,
+    "auc": 0.6653
+  },
+  "leaked_score": {
+    "precision_at_k": 1.0,
+    "auc": 0.9995
+  },
+  "top3_client_share": 0.6051,
+  "pages_missing_april": 380
+}
