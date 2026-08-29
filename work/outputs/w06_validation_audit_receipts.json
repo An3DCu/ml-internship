@@ -1,0 +1,187 @@
+{
+  "lane": "bleed_tracker",
+  "seed": 42,
+  "top_k": 50,
+  "sklearn_version": "1.9.0",
+  "contract_features": [
+    "log_imp_mar",
+    "active_days",
+    "pos_mar",
+    "ctr_mar",
+    "momentum_in_month"
+  ],
+  "months_opened": [
+    "2026-01",
+    "2026-02",
+    "2026-03",
+    "2026-04",
+    "2026-05"
+  ],
+  "sealed_month": "2026-06",
+  "base_rate_by_decision_month": {
+    "2026-01->2026-02": 0.2512,
+    "2026-02->2026-03": 0.229,
+    "2026-03->2026-04": 0.5378,
+    "2026-04->2026-05": 0.5377
+  },
+  "calendar_shift_pp": {
+    "2026-01->2026-02": -5.17,
+    "2026-02->2026-03": 5.39,
+    "2026-03->2026-04": -2.18,
+    "2026-04->2026-05": 2.13
+  },
+  "ladder": {
+    "A. random rows, one month pair | 2026-03->04": {
+      "rule_p50": 0.98,
+      "model_p50": 1.0,
+      "base_rate": 0.5572,
+      "model_auc": 0.7664
+    },
+    "B. grouped by client, one month pair | 2026-03->04": {
+      "rule_p50": 0.9,
+      "model_p50": 0.9,
+      "base_rate": 0.4936,
+      "model_auc": 0.6532
+    },
+    "C. time-forward, all clients | 2026-02->2026-03": {
+      "rule_p50": 0.96,
+      "model_p50": 0.94,
+      "base_rate": 0.229,
+      "model_auc": 0.6971
+    },
+    "C. time-forward, all clients | 2026-03->2026-04": {
+      "rule_p50": 0.92,
+      "model_p50": 0.86,
+      "base_rate": 0.5378,
+      "model_auc": 0.6787
+    },
+    "C. time-forward, all clients | 2026-04->2026-05": {
+      "rule_p50": 0.96,
+      "model_p50": 0.98,
+      "base_rate": 0.5377,
+      "model_auc": 0.6984
+    },
+    "D. time-forward + held-out clients | 2026-02->2026-03": {
+      "rule_p50": 0.88,
+      "model_p50": 0.78,
+      "base_rate": 0.194,
+      "model_auc": 0.5807
+    },
+    "D. time-forward + held-out clients | 2026-03->2026-04": {
+      "rule_p50": 0.9,
+      "model_p50": 0.98,
+      "base_rate": 0.4936,
+      "model_auc": 0.6723
+    },
+    "D. time-forward + held-out clients | 2026-04->2026-05": {
+      "rule_p50": 0.96,
+      "model_p50": 0.94,
+      "base_rate": 0.388,
+      "model_auc": 0.7162
+    }
+  },
+  "calendar_sensitivity": {
+    "as contracted (w03 calendar months)": {
+      "per_deployment": [
+        -0.1,
+        0.08,
+        -0.02
+      ],
+      "mean": -0.0133
+    },
+    "momentum and active_days per day": {
+      "per_deployment": [
+        -0.16,
+        0.08,
+        0.0
+      ],
+      "mean": -0.0267
+    }
+  },
+  "failed_deployment": {
+    "trained_on": "2026-01->2026-02",
+    "judged_on": "2026-02->2026-03",
+    "pages": 21256,
+    "base_rate": 0.194,
+    "rule_p50": 0.88,
+    "model_p50": 0.78,
+    "model_auc": 0.5807,
+    "blind_spot_base_rate": 0.1723,
+    "blind_spot_model_p50": 0.04,
+    "miss_vs_hit_size_mannwhitney_p": 0.4191
+  },
+  "leak_probe": {
+    "honest_p50": 0.9,
+    "honest_auc": 0.6532,
+    "LEAK_next_month_impressions": {
+      "p50": 1.0,
+      "auc": 0.9257
+    },
+    "LEAK_the_label_itself": {
+      "p50": 1.0,
+      "auc": 1.0
+    }
+  },
+  "ablation_auc": {
+    "log_imp_mar": 0.6496,
+    "active_days": 0.6607,
+    "pos_mar": 0.6493,
+    "ctr_mar": 0.6452,
+    "momentum_in_month": 0.5912,
+    "everything except momentum_in_month": 0.6428
+  },
+  "population_audit": {
+    "pages_no_next_month_row": 380,
+    "share_of_positives_pct": 0.83,
+    "base_rate_excluding_them": 0.5357,
+    "clients_in_warehouse": 104,
+    "clients_eligible": 40,
+    "clients_in_slice": 27,
+    "decline_rate_smallest_decile": 0.547,
+    "decline_rate_largest_decile": 0.4755
+  },
+  "uncertainty": {
+    "wilson90_on_45_of_50": [
+      0.8085,
+      0.9505
+    ],
+    "model_minus_rule_client_bootstrap": {
+      "mean": -0.0155,
+      "p5": -0.08,
+      "p95": 0.06,
+      "share_model_ahead": 0.282
+    },
+    "blind_spot_lift_within_month": {
+      "mean": 0.2749,
+      "p5": 0.1023,
+      "p95": 0.4069,
+      "share_above_zero": 0.9965
+    },
+    "blind_spot_lift_by_deployment": {
+      "2026-02->2026-03": -0.1323,
+      "2026-03->2026-04": 0.1925,
+      "2026-04->2026-05": 0.3934
+    },
+    "blind_spot_lift_across_months": {
+      "mean": 0.1518,
+      "p5": -0.024,
+      "p95": 0.3265
+    },
+    "headline_model_minus_rule_across_months": {
+      "mean": -0.0133,
+      "p5": -0.0733,
+      "p95": 0.0467
+    }
+  },
+  "verdict": "week-5 result reproduces exactly; under a time-forward split on held-out clients the model trails the frozen rule by 1.3 points on average (interval contains zero), and the blind-spot claim holds in 2 of 3 deployment months",
+  "reproduced_week5": {
+    "rule_p50": 0.9,
+    "model_p50": 0.9,
+    "model_auc": 0.6532
+  },
+  "sources": [
+    "work/outputs/w03_data_contract_receipts.json",
+    "work/outputs/w04_baseline_score_receipts.json",
+    "work/outputs/w05_model_receipts.json"
+  ]
+}
