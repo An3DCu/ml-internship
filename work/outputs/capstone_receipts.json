@@ -1,0 +1,937 @@
+{
+  "lane": "bleed_tracker",
+  "seed": 42,
+  "top_k": 50,
+  "sklearn_version": "1.9.0",
+  "contract_features": [
+    "log_imp_mar",
+    "active_days",
+    "pos_mar",
+    "ctr_mar",
+    "momentum_in_month"
+  ],
+  "months_opened": [
+    "2026-01",
+    "2026-02",
+    "2026-03",
+    "2026-04",
+    "2026-05",
+    "2026-06"
+  ],
+  "sealed_feature_month": "2026-05",
+  "sealed_label_month": "2026-06",
+  "gates": {
+    "riser": 1.2,
+    "spike_share": 0.25,
+    "min_active_days": 25,
+    "min_impressions_upstream": 100
+  },
+  "pre_registered_thresholds": {
+    "population": 0.2,
+    "psi": 0.25,
+    "base_rate": 0.1,
+    "queue_margin": 0.1,
+    "trial_close_months": 2,
+    "promotion_months": 2,
+    "source": "w07_action_playbook_receipts.json - written before the sealed month was opened"
+  },
+  "reproduced_anchor": {
+    "frame_rows": 85453,
+    "test_rows": 25771,
+    "test_base_rate": 0.4936,
+    "rule_p50": 0.9,
+    "model_p50": 0.9,
+    "model_auc": 0.6532,
+    "train_clients": 18,
+    "test_clients": 9
+  },
+  "decision_envelope": {
+    "sealed_decision_date": "2026-05-31",
+    "scorable_pages": 82570,
+    "clients": 24,
+    "impressions_in_feature_month": 202738833,
+    "editor_capacity": 50,
+    "capacity_share_of_portfolio": 0.000606,
+    "base_rate_by_open_pair": {
+      "2026-01->2026-02": 0.2512,
+      "2026-02->2026-03": 0.229,
+      "2026-03->2026-04": 0.5378,
+      "2026-04->2026-05": 0.5377
+    }
+  },
+  "data": {
+    "release": "hf://datasets/FlyRank/internship-warehouse (build v20260703)",
+    "grain_probe_duplicate_rows": 0,
+    "sealed_feature_month_profile": {
+      "daily_rows": 11687376.0,
+      "first_day": "2026-05-01 00:00:00",
+      "last_day": "2026-05-31 00:00:00",
+      "clients": 66.0,
+      "pages": 389153.0,
+      "gsc_true_share": 0.3742,
+      "ga4_true_share": 0.0634,
+      "ga4_null_share": 0.2071
+    },
+    "clients_total": 104,
+    "clients_eligible": 40,
+    "clients_in_sealed_slice": 24,
+    "page_rows_in_sealed_feature_month": 237910,
+    "pages_scored_sealed": 82570,
+    "release_row_counts": {
+      "dim_clients": 104,
+      "dim_content": 519606,
+      "fact_content_query_90d": 2414248,
+      "fact_content_daily_performance": 78835655,
+      "fact_content_daily_performance_sample": 11694072
+    },
+    "release_star_schema_rows": 81769613,
+    "field_buckets": [
+      {
+        "field": "log_imp_mar",
+        "bucket": "feature",
+        "why it is in that bucket": "log1p(SUM(gsc_impressions)) over the feature month"
+      },
+      {
+        "field": "active_days",
+        "bucket": "feature",
+        "why it is in that bucket": "COUNT(*) FILTER (gsc_impressions > 0) inside the month"
+      },
+      {
+        "field": "pos_mar",
+        "bucket": "feature",
+        "why it is in that bucket": "SUM(gsc_sum_position) / SUM(gsc_impressions), impression-weighted"
+      },
+      {
+        "field": "ctr_mar",
+        "bucket": "feature",
+        "why it is in that bucket": "SUM(gsc_clicks) / SUM(gsc_impressions), both closed on the last day"
+      },
+      {
+        "field": "momentum_in_month",
+        "bucket": "feature",
+        "why it is in that bucket": "second-half impressions / first-half impressions, same month"
+      },
+      {
+        "field": "label_declining",
+        "bucket": "label",
+        "why it is in that bucket": "next month's impressions < 0.8 x this month's"
+      },
+      {
+        "field": "client_hash_id",
+        "bucket": "context",
+        "why it is in that bucket": "grouped splits and per-client reads - never a model input"
+      },
+      {
+        "field": "content_hash_id",
+        "bucket": "context",
+        "why it is in that bucket": "row identity and the month-to-month join - never a model input"
+      },
+      {
+        "field": "report_date / month",
+        "bucket": "context",
+        "why it is in that bucket": "windowing"
+      },
+      {
+        "field": "gsc_data_available",
+        "bucket": "context",
+        "why it is in that bucket": "the availability filter (IS TRUE - the flag is three-valued)"
+      },
+      {
+        "field": "gsc_data_start",
+        "bucket": "context",
+        "why it is in that bucket": "client eligibility"
+      },
+      {
+        "field": "has_first_half_traffic",
+        "bucket": "context",
+        "why it is in that bucket": "built and inspected; the contract caps this lane at five features"
+      },
+      {
+        "field": "spike_share",
+        "bucket": "context",
+        "why it is in that bucket": "gate input: one day's share of the month - never a score input"
+      },
+      {
+        "field": "anything from the label month",
+        "bucket": "excluded",
+        "why it is in that bucket": "future information, measured after the decision moment"
+      },
+      {
+        "field": "every ga4_* / sessions_* / ai_* column",
+        "bucket": "excluded",
+        "why it is in that bucket": "availability is patterned, and zeros mean 'not tracked'"
+      },
+      {
+        "field": "fact_content_query_90d.*",
+        "bucket": "excluded",
+        "why it is in that bucket": "its fixed 90-day window overlaps the label window"
+      },
+      {
+        "field": "hash ids as model inputs",
+        "bucket": "excluded",
+        "why it is in that bucket": "pseudonyms; as features they memorise the client"
+      },
+      {
+        "field": "health_score / priority_score / action_type",
+        "bucket": "excluded",
+        "why it is in that bucket": "another system's decisions; a baseline at best"
+      },
+      {
+        "field": "dim_content.content_updated_date / last_optimized_date",
+        "bucket": "excluded",
+        "why it is in that bucket": "current-state snapshot - see 2b"
+      },
+      {
+        "field": "trend_direction / trend_pct / is_declining_label",
+        "bucket": "excluded",
+        "why it is in that bucket": "label-derived by construction (starter CSV)"
+      }
+    ]
+  },
+  "population_audit": {
+    "largest_client_share_of_slice": 0.2902,
+    "top3_client_share_of_slice": 0.6425,
+    "held_out_clients_present_in_sealed_month": 8,
+    "held_out_clients_expected": 9,
+    "largest_client_share_of_held_out_pool": 0.9024,
+    "update_date_after_decision_share": 0.5114,
+    "optimized_date_after_decision_share": 0.2441,
+    "stale_flag_fires_on_pages": 10
+  },
+  "leak_probe_open_deployment": {
+    "honest (5 contract features)": {
+      "p50": 0.94,
+      "auc": 0.7162
+    },
+    "+ LEAK: next month's impressions": {
+      "p50": 1.0,
+      "auc": 0.9285
+    },
+    "+ LEAK: the label itself": {
+      "p50": 1.0,
+      "auc": 1.0
+    }
+  },
+  "ablation_open_deployment": {
+    "without log_imp_mar": 0.7183,
+    "without active_days": 0.7307,
+    "without pos_mar": 0.6949,
+    "without ctr_mar": 0.7101,
+    "without momentum_in_month": 0.6058,
+    "all five (reference)": 0.7162
+  },
+  "momentum_alone_open_deployment": {
+    "auc": 0.7036,
+    "p50": 0.8569
+  },
+  "clock1_sealed_release": {
+    "pages_scored": 26554,
+    "pages_previous_month": 25595,
+    "pages_vs_prev_month": 1.0375,
+    "nulls_in_features": 0,
+    "psi_train": {
+      "log_imp_mar": 0.0044,
+      "active_days": 0.0301,
+      "pos_mar": 0.1459,
+      "ctr_mar": 0.0214,
+      "momentum_in_month": 0.0815
+    },
+    "psi_time": {
+      "log_imp_mar": 0.0049,
+      "active_days": 0.0262,
+      "pos_mar": 0.4224,
+      "ctr_mar": 0.0149,
+      "momentum_in_month": 0.0395
+    },
+    "active_days_per_day_psi": 0.01,
+    "psi_max_fixed": 0.1459,
+    "A1_population": false,
+    "A2_drift": false,
+    "release_decision": "RELEASE",
+    "disclosed_gap": "the pre-registered A2 reads train->score only; the month-over-month PSI on pos_mar reached 0.4224, above the 0.25 line"
+  },
+  "sealed_comparison": [
+    {
+      "scorer": "my rule (frozen w04 action score)",
+      "precision@50": 0.98,
+      "auc": 0.633,
+      "imp_lost_by_its_50": 634253.0,
+      "median_page_size": 9700.0
+    },
+    {
+      "scorer": "random forest (w05, chosen)",
+      "precision@50": 1.0,
+      "auc": 0.6926,
+      "imp_lost_by_its_50": 150432.0,
+      "median_page_size": 1594.0
+    },
+    {
+      "scorer": "steepest slide only (1 column)",
+      "precision@50": 0.94,
+      "auc": 0.6875,
+      "imp_lost_by_its_50": 43690.0,
+      "median_page_size": 218.0
+    },
+    {
+      "scorer": "lowest CTR only",
+      "precision@50": 0.82,
+      "auc": 0.5739,
+      "imp_lost_by_its_50": 11286.0,
+      "median_page_size": 205.0
+    },
+    {
+      "scorer": "biggest pages first",
+      "precision@50": 0.56,
+      "auc": 0.4938,
+      "imp_lost_by_its_50": 1356260.0,
+      "median_page_size": 110032.0
+    },
+    {
+      "scorer": "product-shaped CTR-fix flag",
+      "precision@50": 0.64,
+      "auc": 0.5259,
+      "imp_lost_by_its_50": 1522521.0,
+      "median_page_size": 101733.0
+    },
+    {
+      "scorer": "picking 50 at random (200 draws)",
+      "precision@50": 0.736,
+      "auc": 0.5,
+      "imp_lost_by_its_50": NaN,
+      "median_page_size": NaN
+    }
+  ],
+  "sealed_precision_at_k": [
+    {
+      "K": 10,
+      "frozen rule": 1.0,
+      "chosen forest": 1.0,
+      "base rate": 0.7362,
+      "rule margin (pp)": 26.4
+    },
+    {
+      "K": 25,
+      "frozen rule": 1.0,
+      "chosen forest": 1.0,
+      "base rate": 0.7362,
+      "rule margin (pp)": 26.4
+    },
+    {
+      "K": 50,
+      "frozen rule": 0.98,
+      "chosen forest": 1.0,
+      "base rate": 0.7362,
+      "rule margin (pp)": 24.4
+    },
+    {
+      "K": 75,
+      "frozen rule": 0.9867,
+      "chosen forest": 0.9867,
+      "base rate": 0.7362,
+      "rule margin (pp)": 25.0
+    },
+    {
+      "K": 100,
+      "frozen rule": 0.98,
+      "chosen forest": 0.98,
+      "base rate": 0.7362,
+      "rule margin (pp)": 24.4
+    },
+    {
+      "K": 150,
+      "frozen rule": 0.98,
+      "chosen forest": 0.9867,
+      "base rate": 0.7362,
+      "rule margin (pp)": 24.4
+    },
+    {
+      "K": 200,
+      "frozen rule": 0.975,
+      "chosen forest": 0.98,
+      "base rate": 0.7362,
+      "rule margin (pp)": 23.9
+    },
+    {
+      "K": 250,
+      "frozen rule": 0.972,
+      "chosen forest": 0.956,
+      "base rate": 0.7362,
+      "rule margin (pp)": 23.6
+    }
+  ],
+  "sealed_per_client_top5": {
+    "rule": 0.825,
+    "forest": 0.775,
+    "clients": 8
+  },
+  "uncertainty": {
+    "model_minus_rule_pp_by_deployment": [
+      -10.0,
+      8.0,
+      -2.0,
+      2.0
+    ],
+    "model_minus_rule_mean_pp": -0.5,
+    "model_minus_rule_bootstrap90_pp": [
+      -6.0,
+      5.0
+    ],
+    "sealed_rule_wilson90": [
+      0.9152,
+      0.9955
+    ],
+    "sealed_model_wilson90": [
+      0.9487,
+      1.0
+    ],
+    "trial_lift_pp_by_deployment": [
+      -6.4,
+      16.5,
+      65.6,
+      -3.3
+    ],
+    "trial_lift_mean_pp": 18.1,
+    "trial_lift_bootstrap90_pp": [
+      -4.1,
+      47.6
+    ]
+  },
+  "ladder": [
+    {
+      "deployment": "anchor 2026-03->04 (w05 grouped split)",
+      "clients": 9,
+      "pages": 25771,
+      "base_rate": 0.4936,
+      "rule_p50": 0.9,
+      "model_p50": 0.9,
+      "margin_pp": 40.6,
+      "rule_auc": 0.627,
+      "model_auc": 0.6532,
+      "alt_40_10": 0.82,
+      "shadow_10": 0.6,
+      "imp_lost_by_rule_50": 320709,
+      "imp_lost_by_model_50": 53233
+    },
+    {
+      "deployment": "forward 2026-02->03",
+      "clients": 8,
+      "pages": 21256,
+      "base_rate": 0.194,
+      "rule_p50": 0.88,
+      "model_p50": 0.78,
+      "margin_pp": 68.6,
+      "rule_auc": 0.5647,
+      "model_auc": 0.5807,
+      "alt_40_10": 0.72,
+      "shadow_10": 0.1,
+      "imp_lost_by_rule_50": 108303,
+      "imp_lost_by_model_50": 206458
+    },
+    {
+      "deployment": "forward 2026-03->04",
+      "clients": 9,
+      "pages": 25771,
+      "base_rate": 0.4936,
+      "rule_p50": 0.9,
+      "model_p50": 0.98,
+      "margin_pp": 40.6,
+      "rule_auc": 0.6271,
+      "model_auc": 0.6723,
+      "alt_40_10": 0.82,
+      "shadow_10": 0.6,
+      "imp_lost_by_rule_50": 320709,
+      "imp_lost_by_model_50": 10461
+    },
+    {
+      "deployment": "forward 2026-04->05",
+      "clients": 9,
+      "pages": 25595,
+      "base_rate": 0.388,
+      "rule_p50": 0.96,
+      "model_p50": 0.94,
+      "margin_pp": 57.2,
+      "rule_auc": 0.715,
+      "model_auc": 0.7162,
+      "alt_40_10": 0.96,
+      "shadow_10": 0.9,
+      "imp_lost_by_rule_50": 422304,
+      "imp_lost_by_model_50": 65266
+    },
+    {
+      "deployment": "SEALED 2026-05->06",
+      "clients": 8,
+      "pages": 26554,
+      "base_rate": 0.7362,
+      "rule_p50": 0.98,
+      "model_p50": 1.0,
+      "margin_pp": 24.4,
+      "rule_auc": 0.633,
+      "model_auc": 0.6926,
+      "alt_40_10": 0.92,
+      "shadow_10": 0.7,
+      "imp_lost_by_rule_50": 634253,
+      "imp_lost_by_model_50": 150432
+    }
+  ],
+  "gate_effects": [
+    {
+      "deployment": "anchor 2026-03->04 (w05 grouped split)",
+      "pool_gated_out_pct": 30.77,
+      "editor_items_swapped": 0,
+      "shadow_items_swapped": 0,
+      "verify_first_in_editor_queue": 13
+    },
+    {
+      "deployment": "forward 2026-02->03",
+      "pool_gated_out_pct": 47.22,
+      "editor_items_swapped": 0,
+      "shadow_items_swapped": 1,
+      "verify_first_in_editor_queue": 23
+    },
+    {
+      "deployment": "forward 2026-03->04",
+      "pool_gated_out_pct": 30.77,
+      "editor_items_swapped": 0,
+      "shadow_items_swapped": 0,
+      "verify_first_in_editor_queue": 13
+    },
+    {
+      "deployment": "forward 2026-04->05",
+      "pool_gated_out_pct": 23.32,
+      "editor_items_swapped": 0,
+      "shadow_items_swapped": 0,
+      "verify_first_in_editor_queue": 13
+    },
+    {
+      "deployment": "SEALED 2026-05->06",
+      "pool_gated_out_pct": 27.56,
+      "editor_items_swapped": 0,
+      "shadow_items_swapped": 0,
+      "verify_first_in_editor_queue": 5
+    }
+  ],
+  "trial_queue": [
+    {
+      "deployment": "anchor 2026-03->04 (w05 grouped split)",
+      "blind_spot_pages": 8626,
+      "blind_spot_base_rate": 0.4353,
+      "trial_precision": 0.6,
+      "lift_pp": 16.5,
+      "declines_the_rule_scores_zero": 3755,
+      "share_of_all_declines": 0.2952
+    },
+    {
+      "deployment": "forward 2026-02->03",
+      "blind_spot_pages": 7672,
+      "blind_spot_base_rate": 0.1637,
+      "trial_precision": 0.1,
+      "lift_pp": -6.4,
+      "declines_the_rule_scores_zero": 1256,
+      "share_of_all_declines": 0.3046
+    },
+    {
+      "deployment": "forward 2026-03->04",
+      "blind_spot_pages": 8626,
+      "blind_spot_base_rate": 0.4353,
+      "trial_precision": 0.6,
+      "lift_pp": 16.5,
+      "declines_the_rule_scores_zero": 3755,
+      "share_of_all_declines": 0.2952
+    },
+    {
+      "deployment": "forward 2026-04->05",
+      "blind_spot_pages": 8243,
+      "blind_spot_base_rate": 0.244,
+      "trial_precision": 0.9,
+      "lift_pp": 65.6,
+      "declines_the_rule_scores_zero": 2011,
+      "share_of_all_declines": 0.2025
+    },
+    {
+      "deployment": "SEALED 2026-05->06",
+      "blind_spot_pages": 9269,
+      "blind_spot_base_rate": 0.7325,
+      "trial_precision": 0.7,
+      "lift_pp": -3.3,
+      "declines_the_rule_scores_zero": 6790,
+      "share_of_all_declines": 0.3473
+    }
+  ],
+  "clock2_alarms": [
+    {
+      "released_for": "2026-02->2026-03",
+      "A1_population": false,
+      "A2_drift": false,
+      "A3_base_rate_move": false,
+      "A4_queue_below_margin": false,
+      "A5_trial_lift<=0": true,
+      "A6_promotion_failed": true,
+      "base_rate_move_pp": -4.2,
+      "queue_margin_pp": 68.6,
+      "what_happened": "editor 0.88 | 40+10 0.72 | base 0.19"
+    },
+    {
+      "released_for": "2026-03->2026-04",
+      "A1_population": true,
+      "A2_drift": false,
+      "A3_base_rate_move": true,
+      "A4_queue_below_margin": false,
+      "A5_trial_lift<=0": false,
+      "A6_promotion_failed": true,
+      "base_rate_move_pp": 30.0,
+      "queue_margin_pp": 40.6,
+      "what_happened": "editor 0.90 | 40+10 0.82 | base 0.49"
+    },
+    {
+      "released_for": "2026-04->2026-05",
+      "A1_population": false,
+      "A2_drift": false,
+      "A3_base_rate_move": true,
+      "A4_queue_below_margin": false,
+      "A5_trial_lift<=0": false,
+      "A6_promotion_failed": false,
+      "base_rate_move_pp": -10.6,
+      "queue_margin_pp": 57.2,
+      "what_happened": "editor 0.96 | 40+10 0.96 | base 0.39"
+    },
+    {
+      "released_for": "2026-05->2026-06",
+      "A1_population": false,
+      "A2_drift": false,
+      "A3_base_rate_move": true,
+      "A4_queue_below_margin": false,
+      "A5_trial_lift<=0": true,
+      "A6_promotion_failed": true,
+      "base_rate_move_pp": 34.8,
+      "queue_margin_pp": 24.4,
+      "what_happened": "editor 0.98 | 40+10 0.92 | base 0.74"
+    }
+  ],
+  "policy_decisions": {
+    "close_shadow_queue": false,
+    "promote_trial_to_editor_slots": false,
+    "shipped_configuration": "50 rule slots + 10 shadow items"
+  },
+  "sealed_leak_probe": {
+    "honest (5 contract features)": {
+      "p50": 1.0,
+      "auc": 0.6926
+    },
+    "+ LEAK: next month's impressions": {
+      "p50": 1.0,
+      "auc": 0.92
+    },
+    "+ LEAK: the label itself": {
+      "p50": 1.0,
+      "auc": 1.0
+    }
+  },
+  "limitations": {
+    "sealed_pool_largest_client_share": 0.9024,
+    "month_table": [
+      {
+        "pair": "2026-01->2026-02",
+        "pages": 63909,
+        "slice_base_rate": 0.2512,
+        "held_out_base_rate": 0.2358,
+        "median_next_over_now": 1.1385,
+        "share_of_pages_that_grew": 0.5967
+      },
+      {
+        "pair": "2026-02->2026-03",
+        "pages": 72745,
+        "slice_base_rate": 0.229,
+        "held_out_base_rate": 0.194,
+        "median_next_over_now": 1.1875,
+        "share_of_pages_that_grew": 0.636
+      },
+      {
+        "pair": "2026-03->2026-04",
+        "pages": 85453,
+        "slice_base_rate": 0.5378,
+        "held_out_base_rate": 0.4936,
+        "median_next_over_now": 0.7561,
+        "share_of_pages_that_grew": 0.3185
+      },
+      {
+        "pair": "2026-04->2026-05",
+        "pages": 85518,
+        "slice_base_rate": 0.5377,
+        "held_out_base_rate": 0.388,
+        "median_next_over_now": 0.7552,
+        "share_of_pages_that_grew": 0.3071
+      },
+      {
+        "pair": "2026-05->2026-06",
+        "pages": 82570,
+        "slice_base_rate": 0.7027,
+        "held_out_base_rate": 0.7362,
+        "median_next_over_now": 0.559,
+        "share_of_pages_that_grew": 0.1919
+      }
+    ],
+    "sealed_declines": 19549,
+    "queue_recall": 0.00251,
+    "impressions_lost_by_pool": 27588638,
+    "impressions_in_front_of_editor": 634253,
+    "impressions_share_covered": 0.023,
+    "sealed_ablation_auc": {
+      "without log_imp_mar": 0.6871,
+      "without active_days": 0.6936,
+      "without pos_mar": 0.6958,
+      "without ctr_mar": 0.6599,
+      "without momentum_in_month": 0.6268,
+      "all five (reference)": 0.6926
+    },
+    "sealed_momentum_alone": {
+      "auc": 0.6588,
+      "p50": 0.9127
+    },
+    "sealed_train_base_rate": 0.6016,
+    "sealed_judged_base_rate": 0.7362,
+    "biggest_bleeds_ranks": [
+      {
+        "imp_mar": 93967.0,
+        "imp_next": 12842.0,
+        "momentum_in_month": 0.449,
+        "rule_rank": 268,
+        "model_rank": 1010
+      },
+      {
+        "imp_mar": 84888.0,
+        "imp_next": 12572.0,
+        "momentum_in_month": 0.855,
+        "rule_rank": 19670,
+        "model_rank": 11054
+      },
+      {
+        "imp_mar": 154212.0,
+        "imp_next": 86917.0,
+        "momentum_in_month": 0.981,
+        "rule_rank": 19820,
+        "model_rank": 19831
+      },
+      {
+        "imp_mar": 235817.0,
+        "imp_next": 169233.0,
+        "momentum_in_month": 1.241,
+        "rule_rank": 13366,
+        "model_rank": 13710
+      },
+      {
+        "imp_mar": 156650.0,
+        "imp_next": 93100.0,
+        "momentum_in_month": 0.967,
+        "rule_rank": 10018,
+        "model_rank": 19983
+      }
+    ]
+  },
+  "delivered_sealed_queue": {
+    "decision_date": "2026-05-31",
+    "editor_slots": 50,
+    "shadow_items": 10,
+    "action_mix": {
+      "rewrite_title_and_refresh": 45,
+      "investigate_quiet_risk": 10,
+      "verify_then_review": 5
+    },
+    "reason_mix": {
+      "slipping_and_underclicking": 45,
+      "quiet_risk_model_only": 10,
+      "measurement_suspicion": 5
+    },
+    "distinct_clients_editor": 3,
+    "editor_precision": 0.98,
+    "shadow_precision": 0.7,
+    "verify_first_items": 5,
+    "editor_median_impressions": 9700,
+    "shadow_median_impressions": 2111
+  },
+  "review_questions": [
+    "Is this a season or a one-off event? Check the same weeks last year and the client's campaign calendar.",
+    "Is the page still about what people are searching for? A rewrite cannot fix an intent mismatch.",
+    "Is the client shipping something right now - migration, redesign, tracking change, de-indexing?",
+    "Would I be able to tell, next month, whether this action helped? If not, do not take it yet."
+  ],
+  "no_go_list": [
+    {
+      "id": "P1",
+      "policy": "A page with no first-half traffic never takes an action slot",
+      "implementation_status": "ASSERTED IN THIS NOTEBOOK"
+    },
+    {
+      "id": "P2",
+      "policy": "A page that was rising never takes an action slot",
+      "implementation_status": "ASSERTED IN THIS NOTEBOOK"
+    },
+    {
+      "id": "P3",
+      "policy": "A page under measurement suspicion is verified before any content action",
+      "implementation_status": "ASSERTED IN THIS NOTEBOOK"
+    },
+    {
+      "id": "P4",
+      "policy": "A page below 100 impressions in the feature month is never scored",
+      "implementation_status": "ENFORCED UPSTREAM (re-checked here)"
+    },
+    {
+      "id": "P5",
+      "policy": "A page optimised in the last 30 days is suppressed from the queue",
+      "implementation_status": "PROPOSED - NOT IMPLEMENTABLE IN THIS RELEASE"
+    },
+    {
+      "id": "P6",
+      "policy": "The queue never authorises a rewrite, a merge or a de-index on its own",
+      "implementation_status": "POLICY - NOT CODE"
+    }
+  ],
+  "playbook_map": [
+    {
+      "reason_code": "slipping_and_underclicking",
+      "supplied_by": "rule",
+      "archetype": "visible page losing clicks it already earns",
+      "action": "rewrite_title_and_refresh",
+      "guardrail": "a rewrite cannot fix an intent mismatch - check the queries first"
+    },
+    {
+      "reason_code": "slipping_reachable_page",
+      "supplied_by": "rule",
+      "archetype": "page in reach of an edit, sliding inside the month",
+      "action": "refresh_now",
+      "guardrail": "a slide can be seasonal - check last year and the client's calendar"
+    },
+    {
+      "reason_code": "slipping_deep_page",
+      "supplied_by": "rule",
+      "archetype": "page ranked past 20, sliding, unlikely to be edited back",
+      "action": "expand_or_consolidate",
+      "guardrail": "consolidation is irreversible - never merge without a human owner"
+    },
+    {
+      "reason_code": "quiet_risk_model_only",
+      "supplied_by": "model",
+      "archetype": "flat page the rule cannot score, ranked high by the model",
+      "action": "investigate_quiet_risk",
+      "guardrail": "the model gives no reason - a person supplies one or the item is dropped"
+    },
+    {
+      "reason_code": "measurement_suspicion",
+      "supplied_by": "gate",
+      "archetype": "one day, or a short live window, is carrying the month",
+      "action": "verify_then_review",
+      "guardrail": "verify the tracking / campaign story BEFORE any content action"
+    },
+    {
+      "reason_code": "durable_riser",
+      "supplied_by": "gate",
+      "archetype": "page was rising when we looked at it",
+      "action": "monitor_only",
+      "guardrail": "never actioned: risers declined below the base rate in this slice"
+    },
+    {
+      "reason_code": "new_or_no_first_half_traffic",
+      "supplied_by": "gate",
+      "archetype": "no first-half traffic, so its momentum is imputed",
+      "action": "monitor_only",
+      "guardrail": "never actioned: the slide signal is fabricated for these pages"
+    },
+    {
+      "reason_code": "holding_steady",
+      "supplied_by": "rule",
+      "archetype": "not sliding, and not picked by the trial queue",
+      "action": "monitor",
+      "guardrail": "the queue is not a to-do list for the whole portfolio"
+    }
+  ],
+  "page_disposition_sealed": {
+    "queued: editor slots": 50,
+    "queued: shadow items": 10,
+    "monitor_only: was rising": 7223,
+    "monitor_only: no first-half traffic": 96,
+    "monitor: eligible, not sliding, not picked": 9259,
+    "eligible and sliding, below the cut": 9916
+  },
+  "result_map": [
+    {
+      "number the paper prints": "sealed precision@50 = 0.98 (base rate 0.736, margin +24.4pp)",
+      "where it is computed": "capstone s4a",
+      "what it traces back to": "new: the sealed release"
+    },
+    {
+      "number the paper prints": "four forward deployments: 0.88 / 0.90 / 0.96 / 0.98",
+      "where it is computed": "capstone s4a",
+      "what it traces back to": "w06 rung D + the sealed month"
+    },
+    {
+      "number the paper prints": "model minus rule: mean -0.5pp, 90% interval -6.0 to +5.0",
+      "where it is computed": "capstone s4d",
+      "what it traces back to": "w05 tie, w06 interval, extended"
+    },
+    {
+      "number the paper prints": "trial lift over its own pool: -6.4 / +16.5 / +65.6 / -3.3 points",
+      "where it is computed": "capstone s4d",
+      "what it traces back to": "w05 blind spot, re-measured"
+    },
+    {
+      "number the paper prints": "pre-release gate passed the release without labels",
+      "where it is computed": "capstone s3c",
+      "what it traces back to": "w07 pre-registered thresholds"
+    },
+    {
+      "number the paper prints": "A3 fired on a +34.8pp base-rate move; A5 and A6 fired; no promotion",
+      "where it is computed": "capstone s4d",
+      "what it traces back to": "w07 decision rules"
+    },
+    {
+      "number the paper prints": "disclosed gap: month-over-month PSI on pos_mar 0.4224, alarm could not see it",
+      "where it is computed": "capstone s3c/s4e",
+      "what it traces back to": "new"
+    },
+    {
+      "number the paper prints": "precision@50 saturates: honest and leaked models both score 1.00",
+      "where it is computed": "capstone s4d",
+      "what it traces back to": "new"
+    },
+    {
+      "number the paper prints": "queue recall 0.25% of declines, 2.3% of lost impressions",
+      "where it is computed": "capstone s5",
+      "what it traces back to": "new"
+    },
+    {
+      "number the paper prints": "figure: four deployments + the margin",
+      "where it is computed": "capstone s7",
+      "what it traces back to": "work/figures/capstone_fig1_sealed_results.png"
+    },
+    {
+      "number the paper prints": "figure: precision@K + the shadow queue's lift by month",
+      "where it is computed": "capstone s7",
+      "what it traces back to": "work/figures/capstone_fig2_precision_at_k.png"
+    },
+    {
+      "number the paper prints": "figure: action mix + page disposition",
+      "where it is computed": "capstone s7",
+      "what it traces back to": "work/figures/capstone_fig3_queue_composition.png"
+    }
+  ],
+  "exports": {
+    "queue_csv": "work/outputs/capstone_sealed_queue.csv (regenerated, gitignored)",
+    "figures": [
+      "work/figures/capstone_fig1_sealed_results.png",
+      "work/figures/capstone_fig2_precision_at_k.png",
+      "work/figures/capstone_fig3_queue_composition.png"
+    ],
+    "receipts_json": "work/outputs/capstone_receipts.json (committed)"
+  },
+  "environment": {
+    "python": "3.12.6",
+    "numpy": "1.26.4",
+    "pandas": "2.3.3",
+    "scikit_learn": "1.9.0",
+    "duckdb": "1.5.4",
+    "matplotlib": "3.10.9",
+    "warehouse_build": "v20260703",
+    "seed": 42
+  },
+  "verdict": "on a sealed month neither scorer had seen, the frozen hand-written rule filled a 50-page review queue at precision@50 = 0.98 against a 0.736 base rate (+24.4 points, the smallest margin of four forward deployments and the highest precision); the random forest scored 1.00 on the same pool, a one-page difference inside an interval that contains zero across four months; the pre-registered promotion rule declined to give the model editorial slots for the third time in four months, and the queue ships as 50 rule slots plus 10 measured shadow items"
+}
