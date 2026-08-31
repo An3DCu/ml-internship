@@ -1,0 +1,479 @@
+{
+  "lane": "bleed_tracker",
+  "seed": 42,
+  "top_k": 50,
+  "sklearn_version": "1.9.0",
+  "contract_features": [
+    "log_imp_mar",
+    "active_days",
+    "pos_mar",
+    "ctr_mar",
+    "momentum_in_month"
+  ],
+  "months_opened": [
+    "2026-01",
+    "2026-02",
+    "2026-03",
+    "2026-04",
+    "2026-05"
+  ],
+  "sealed_month": "2026-06",
+  "rule_slots": 50,
+  "trial_shadow_items": 10,
+  "in_budget_alternative": {
+    "rule_slots": 40,
+    "trial_slots": 10
+  },
+  "gates": {
+    "riser": 1.2,
+    "spike_share": 0.25,
+    "min_active_days": 25,
+    "min_impressions_upstream": 100
+  },
+  "queue_comparison": {
+    "frozen 2026-03->04 (w05 split)": {
+      "base_rate": 0.4936,
+      "shipped_editor_50": 0.9,
+      "alt_40_10_in_budget": 0.82,
+      "model_only_50": 0.9,
+      "shadow_10": 0.6,
+      "impressions_lost_shipped": 320709,
+      "impressions_lost_model_only": 53233
+    },
+    "forward 2026-02->03": {
+      "base_rate": 0.194,
+      "shipped_editor_50": 0.88,
+      "alt_40_10_in_budget": 0.72,
+      "model_only_50": 0.78,
+      "shadow_10": 0.1,
+      "impressions_lost_shipped": 108303,
+      "impressions_lost_model_only": 206458
+    },
+    "forward 2026-03->04": {
+      "base_rate": 0.4936,
+      "shipped_editor_50": 0.9,
+      "alt_40_10_in_budget": 0.82,
+      "model_only_50": 0.98,
+      "shadow_10": 0.6,
+      "impressions_lost_shipped": 320709,
+      "impressions_lost_model_only": 10461
+    },
+    "forward 2026-04->05": {
+      "base_rate": 0.388,
+      "shipped_editor_50": 0.96,
+      "alt_40_10_in_budget": 0.96,
+      "model_only_50": 0.94,
+      "shadow_10": 0.9,
+      "impressions_lost_shipped": 422304,
+      "impressions_lost_model_only": 65266
+    }
+  },
+  "trial_queue": {
+    "frozen 2026-03->04 (w05 split)": {
+      "blind_spot_base_rate": 0.4353,
+      "trial_precision": 0.6,
+      "lift_pp": 16.5
+    },
+    "forward 2026-02->03": {
+      "blind_spot_base_rate": 0.1637,
+      "trial_precision": 0.1,
+      "lift_pp": -6.4
+    },
+    "forward 2026-03->04": {
+      "blind_spot_base_rate": 0.4353,
+      "trial_precision": 0.6,
+      "lift_pp": 16.5
+    },
+    "forward 2026-04->05": {
+      "blind_spot_base_rate": 0.244,
+      "trial_precision": 0.9,
+      "lift_pp": 65.6
+    }
+  },
+  "price_of_ten_in_budget_slots_pp": 8.0,
+  "gate_effects": {
+    "frozen 2026-03->04 (w05 split)": {
+      "pool_gated_out_pct": 30.77,
+      "editor_items_swapped": 0,
+      "shadow_items_swapped": 0,
+      "verify_first_in_editor_queue": 13
+    },
+    "forward 2026-02->03": {
+      "pool_gated_out_pct": 47.22,
+      "editor_items_swapped": 0,
+      "shadow_items_swapped": 1,
+      "verify_first_in_editor_queue": 23
+    },
+    "forward 2026-03->04": {
+      "pool_gated_out_pct": 30.77,
+      "editor_items_swapped": 0,
+      "shadow_items_swapped": 0,
+      "verify_first_in_editor_queue": 13
+    },
+    "forward 2026-04->05": {
+      "pool_gated_out_pct": 23.32,
+      "editor_items_swapped": 0,
+      "shadow_items_swapped": 0,
+      "verify_first_in_editor_queue": 13
+    }
+  },
+  "trial_slot_alternatives": {
+    "frozen 2026-03->04 (w05 split)": {
+      "blind_spot_base_rate": 0.4353,
+      "random_10 (200 draws)": 0.422,
+      "model (the trial)": 0.6,
+      "steepest slide, no model": 0.7,
+      "biggest page first": 0.2,
+      "model_ties_at_cut": 1.0,
+      "model_pick_momentum_median": 0.805
+    },
+    "forward 2026-02->03": {
+      "blind_spot_base_rate": 0.1637,
+      "random_10 (200 draws)": 0.1535,
+      "model (the trial)": 0.1,
+      "steepest slide, no model": 0.2,
+      "biggest page first": 0.3,
+      "model_ties_at_cut": 5.0,
+      "model_pick_momentum_median": 1.0419
+    },
+    "forward 2026-03->04": {
+      "blind_spot_base_rate": 0.4353,
+      "random_10 (200 draws)": 0.4395,
+      "model (the trial)": 0.6,
+      "steepest slide, no model": 0.7,
+      "biggest page first": 0.2,
+      "model_ties_at_cut": 1.0,
+      "model_pick_momentum_median": 0.8212
+    },
+    "forward 2026-04->05": {
+      "blind_spot_base_rate": 0.244,
+      "random_10 (200 draws)": 0.255,
+      "model (the trial)": 0.9,
+      "steepest slide, no model": 0.4,
+      "biggest page first": 0.0,
+      "model_ties_at_cut": 1.0,
+      "model_pick_momentum_median": 0.8035
+    }
+  },
+  "delivered_queue_frozen_month": {
+    "editor_slots": 50,
+    "shadow_items": 10,
+    "action_mix": {
+      "rewrite_title_and_refresh": 37,
+      "verify_then_review": 13,
+      "investigate_quiet_risk": 10
+    },
+    "reason_mix": {
+      "slipping_and_underclicking": 37,
+      "measurement_suspicion": 13,
+      "quiet_risk_model_only": 10
+    },
+    "distinct_clients_editor": 4,
+    "editor_precision": 0.9,
+    "shadow_precision": 0.6
+  },
+  "intended_use": {
+    "clients_total": 104,
+    "clients_eligible": 40,
+    "clients_in_slice": 27,
+    "pages_reported_in_feature_month": 176738,
+    "pages_scored": 85453,
+    "update_date_after_decision_share": 0.7938,
+    "optimized_date_after_decision_share": 0.3963,
+    "stale_flag_fires_on_pages": 6
+  },
+  "no_go_list": {
+    "P1": {
+      "policy": "A page with no first-half traffic never takes an action slot",
+      "status": "ASSERTED IN THIS NOTEBOOK"
+    },
+    "P2": {
+      "policy": "A page that was rising never takes an action slot",
+      "status": "ASSERTED IN THIS NOTEBOOK"
+    },
+    "P3": {
+      "policy": "A page under measurement suspicion is verified before any content action",
+      "status": "ASSERTED IN THIS NOTEBOOK"
+    },
+    "P4": {
+      "policy": "A page below 100 impressions in the feature month is never scored",
+      "status": "ENFORCED UPSTREAM (re-checked here)"
+    },
+    "P5": {
+      "policy": "A page optimised in the last 30 days is suppressed from the queue",
+      "status": "PROPOSED - NOT IMPLEMENTABLE IN THIS RELEASE"
+    },
+    "P6": {
+      "policy": "The queue never authorises a rewrite, a merge or a de-index on its own",
+      "status": "POLICY - NOT CODE"
+    }
+  },
+  "review_questions": [
+    "Is this a season or a one-off event? Check the same weeks last year and the client's campaign calendar.",
+    "Is the page still about what people are searching for? A rewrite cannot fix an intent mismatch.",
+    "Is the client shipping something right now - migration, redesign, tracking change, de-indexing?",
+    "Would I be able to tell, next month, whether this action helped? If not, do not take it yet."
+  ],
+  "pre_release_checks": {
+    "2026-02->2026-03": {
+      "pages_scored": 21256,
+      "pages_vs_prev_month": 1.1133,
+      "nulls_in_features": 0,
+      "psi_train_log_imp_mar": 0.0033,
+      "psi_time_log_imp_mar": 0.0219,
+      "psi_train_active_days": 13.0967,
+      "psi_time_active_days": 13.3518,
+      "psi_train_pos_mar": 0.0276,
+      "psi_time_pos_mar": 0.1158,
+      "psi_train_ctr_mar": 0.013,
+      "psi_time_ctr_mar": 0.0064,
+      "psi_train_momentum_in_month": 0.0228,
+      "psi_time_momentum_in_month": 0.054,
+      "psi_train_max": 13.0967,
+      "psi_time_max": 13.3518
+    },
+    "2026-03->2026-04": {
+      "pages_scored": 25771,
+      "pages_vs_prev_month": 1.2124,
+      "nulls_in_features": 0,
+      "psi_train_log_imp_mar": 0.0188,
+      "psi_time_log_imp_mar": 0.0036,
+      "psi_train_active_days": 0.003,
+      "psi_time_active_days": 0.0017,
+      "psi_train_pos_mar": 0.0819,
+      "psi_time_pos_mar": 0.0714,
+      "psi_train_ctr_mar": 0.0183,
+      "psi_time_ctr_mar": 0.0048,
+      "psi_train_momentum_in_month": 0.2468,
+      "psi_time_momentum_in_month": 0.2841,
+      "psi_train_max": 0.2468,
+      "psi_time_max": 0.2841
+    },
+    "2026-04->2026-05": {
+      "pages_scored": 25595,
+      "pages_vs_prev_month": 0.9932,
+      "nulls_in_features": 0,
+      "psi_train_log_imp_mar": 0.0136,
+      "psi_time_log_imp_mar": 0.0019,
+      "psi_train_active_days": 0.1296,
+      "psi_time_active_days": 0.0014,
+      "psi_train_pos_mar": 0.1348,
+      "psi_time_pos_mar": 0.0636,
+      "psi_train_ctr_mar": 0.0135,
+      "psi_time_ctr_mar": 0.0042,
+      "psi_train_momentum_in_month": 0.157,
+      "psi_time_momentum_in_month": 0.0553,
+      "psi_train_max": 0.157,
+      "psi_time_max": 0.0636
+    }
+  },
+  "psi_thresholds": {
+    "watch": 0.1,
+    "hold": 0.25,
+    "source": "borrowed convention"
+  },
+  "monitoring": {
+    "thresholds": {
+      "population": 0.2,
+      "psi": 0.25,
+      "base_rate": 0.1,
+      "queue_margin": 0.1,
+      "trial_close_months": 2,
+      "promotion_months": 2,
+      "status": "PROPOSED POLICY - pre-registered here, never yet run on the sealed month"
+    },
+    "psi_calendar_artifact": {
+      "2026-02->2026-03": {
+        "active_days_as_is": 13.0967,
+        "active_days_per_day": 0.0783
+      },
+      "2026-03->2026-04": {
+        "active_days_as_is": 0.003,
+        "active_days_per_day": 0.0195
+      },
+      "2026-04->2026-05": {
+        "active_days_as_is": 0.1296,
+        "active_days_per_day": 0.1296
+      }
+    },
+    "would_have_fired": {
+      "2026-02->2026-03": {
+        "A1_population": false,
+        "A2_drift": false,
+        "A3_base_rate_move": false,
+        "A4_queue_below_margin": false,
+        "A5_trial_lift<=0": true,
+        "A6_promotion_failed": true,
+        "psi_max_fixed": 0.0783,
+        "base_rate_move_pp": -4.2,
+        "queue_margin_pp": 68.6,
+        "what_happened": "editor 0.88 | in-budget 40+10 0.72 | base 0.19"
+      },
+      "2026-03->2026-04": {
+        "A1_population": true,
+        "A2_drift": false,
+        "A3_base_rate_move": true,
+        "A4_queue_below_margin": false,
+        "A5_trial_lift<=0": false,
+        "A6_promotion_failed": true,
+        "psi_max_fixed": 0.2468,
+        "base_rate_move_pp": 30.0,
+        "queue_margin_pp": 40.6,
+        "what_happened": "editor 0.90 | in-budget 40+10 0.82 | base 0.49"
+      },
+      "2026-04->2026-05": {
+        "A1_population": false,
+        "A2_drift": false,
+        "A3_base_rate_move": true,
+        "A4_queue_below_margin": false,
+        "A5_trial_lift<=0": false,
+        "A6_promotion_failed": false,
+        "psi_max_fixed": 0.157,
+        "base_rate_move_pp": -10.6,
+        "queue_margin_pp": 57.2,
+        "what_happened": "editor 0.96 | in-budget 40+10 0.96 | base 0.39"
+      }
+    },
+    "policy_decisions_on_observed_history": {
+      "close_shadow_queue": false,
+      "promote_trial_to_slots": false
+    }
+  },
+  "page_disposition_frozen_month": {
+    "queued: editor slots": 50,
+    "queued: shadow items": 10,
+    "monitor_only: was rising": 6674,
+    "monitor_only: no first-half traffic": 1256,
+    "monitor: eligible, not sliding, not picked": 8616,
+    "eligible and sliding, below the cut": 9165
+  },
+  "playbook_map": [
+    {
+      "reason_code": "slipping_and_underclicking",
+      "supplied_by": "rule",
+      "archetype": "visible page losing clicks it already earns",
+      "action": "rewrite_title_and_refresh",
+      "guardrail": "a rewrite cannot fix an intent mismatch - check the queries first"
+    },
+    {
+      "reason_code": "slipping_reachable_page",
+      "supplied_by": "rule",
+      "archetype": "page in reach of an edit, sliding inside the month",
+      "action": "refresh_now",
+      "guardrail": "a slide can be seasonal - check last year and the client's calendar"
+    },
+    {
+      "reason_code": "slipping_deep_page",
+      "supplied_by": "rule",
+      "archetype": "page ranked past 20, sliding, unlikely to be edited back",
+      "action": "expand_or_consolidate",
+      "guardrail": "consolidation is irreversible - never merge without a human owner"
+    },
+    {
+      "reason_code": "quiet_risk_model_only",
+      "supplied_by": "model",
+      "archetype": "flat page the rule cannot score, ranked high by the model",
+      "action": "investigate_quiet_risk",
+      "guardrail": "the model gives no reason - a person supplies one or the item is dropped"
+    },
+    {
+      "reason_code": "measurement_suspicion",
+      "supplied_by": "gate",
+      "archetype": "one day, or a short live window, is carrying the month",
+      "action": "verify_then_review",
+      "guardrail": "verify the tracking / campaign story BEFORE any content action"
+    },
+    {
+      "reason_code": "durable_riser",
+      "supplied_by": "gate",
+      "archetype": "page was rising when we looked at it",
+      "action": "monitor_only",
+      "guardrail": "never actioned: risers declined below the base rate in this slice"
+    },
+    {
+      "reason_code": "new_or_no_first_half_traffic",
+      "supplied_by": "gate",
+      "archetype": "no first-half traffic, so its momentum is imputed",
+      "action": "monitor_only",
+      "guardrail": "never actioned: the slide signal is fabricated for these pages"
+    },
+    {
+      "reason_code": "holding_steady",
+      "supplied_by": "rule",
+      "archetype": "not sliding, and not picked by the trial queue",
+      "action": "monitor",
+      "guardrail": "the queue is not a to-do list for the whole portfolio"
+    }
+  ],
+  "exports": {
+    "queue_csv": "work/outputs/w07_action_queue.csv (regenerated, gitignored)",
+    "figures": [
+      "work/figures/w07_precision_at_k.png",
+      "work/figures/w07_action_mix.png"
+    ],
+    "receipts_json": "work/outputs/w07_action_playbook_receipts.json (committed)"
+  },
+  "result_map": [
+    {
+      "number the paper will print": "editor queue precision@50 = 0.90 (base rate 0.494)",
+      "where it is computed": "w07 s1b",
+      "what it traces back to": "w04 + w05 receipts"
+    },
+    {
+      "number the paper will print": "precision@50 across 3 forward deployments: 0.88 / 0.90 / 0.96",
+      "where it is computed": "w07 s1b",
+      "what it traces back to": "w06 rung D"
+    },
+    {
+      "number the paper will print": "ten in-budget trial slots cost 8.0 points of precision@50",
+      "where it is computed": "w07 s1c",
+      "what it traces back to": "new this week"
+    },
+    {
+      "number the paper will print": "trial lift over its own pool: -6 / +16 / +66 points",
+      "where it is computed": "w07 s1c",
+      "what it traces back to": "w05 blind spot, re-measured"
+    },
+    {
+      "number the paper will print": "model vs a one-line rule in the trial pool: 0.53 vs 0.43",
+      "where it is computed": "w07 s1e",
+      "what it traces back to": "new this week"
+    },
+    {
+      "number the paper will print": "no-go list with per-policy implementation status",
+      "where it is computed": "w07 s3",
+      "what it traces back to": "w03 / w04 / w05"
+    },
+    {
+      "number the paper will print": "PSI=13.1 alarm is a calendar artifact (0.08 per day)",
+      "where it is computed": "w07 s4",
+      "what it traces back to": "w06 s2c"
+    },
+    {
+      "number the paper will print": "no pre-release check would have held the failed release",
+      "where it is computed": "w07 s4",
+      "what it traces back to": "w06 failed deployment"
+    },
+    {
+      "number the paper will print": "figure: precision@K, two panels",
+      "where it is computed": "w07 s5",
+      "what it traces back to": "work/figures/w07_precision_at_k.png"
+    },
+    {
+      "number the paper will print": "figure: action mix + page disposition",
+      "where it is computed": "w07 s5",
+      "what it traces back to": "work/figures/w07_action_mix.png"
+    }
+  ],
+  "environment": {
+    "python": "3.12.6",
+    "numpy": "1.26.4",
+    "pandas": "2.3.3",
+    "scikit_learn": "1.9.0",
+    "duckdb": "1.5.4",
+    "matplotlib": "3.10.9",
+    "warehouse_build": "v20260703",
+    "seed": 42
+  },
+  "verdict": "the queue ships as 50 editor slots filled by the frozen rule plus 10 shadow items from the forest; moving ten slots to the model would have cost 8.0 points of precision@50 across three forward deployments, and the pre-registered promotion rule does not promote it on this evidence"
+}
